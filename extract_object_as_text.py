@@ -1,56 +1,45 @@
 import os
-from glob import glob
+from glob import iglob
 from functools import reduce
 import pandas as pd
 from xml.etree import ElementTree as et
+from concurrent.futures import ThreadPoolExecutor
 
-# import all the .xml files into the xml_list
-xml_list = glob('./dataset/*.xml')
-# print(xml_list)
-
-# replace \\ with / for proper path
-xml_list = list(map(lambda x: x.replace('\\', '/'), xml_list))
-
-
-# now read each xml file and from each xml file get
-# filename, size(width, height), object(name, xmin, xmax, ymin, ymax)
-def extract_object_info(filename):
-    tree = et.parse(filename)
+def extract_object_info(xml_file):
+    tree = et.parse(xml_file)
     root = tree.getroot()
     file_name = root.find('filename').text
-    # print(file_name)
     size = root.find('size')
-    width = size.find('width').text
-    height = size.find('height').text
-    object_img = root.findall('object')
-    parser = []
-    for obj in object_img:
+    width = float(size.find('width').text)
+    height = float(size.find('height').text)
+    data = []
+    for obj in root.findall('object'):
         name = obj.find('name').text
         bound = obj.find('bndbox')
-        xmin = bound.find('xmin').text
-        xmax = bound.find('xmax').text
-        ymin = bound.find('ymin').text
-        ymax = bound.find('ymax').text
-        parser.append([file_name, width, height, name, xmin, xmax, ymin, ymax])
-    return parser
+        xmin = float(bound.find('xmin').text)
+        xmax = float(bound.find('xmax').text)
+        ymin = float(bound.find('ymin').text)
+        ymax = float(bound.find('ymax').text)
+        center_x = ((xmax + xmin) / 2) / width
+        center_y = ((ymax + ymin) / 2) / height
+        w = (xmax - xmin) / width
+        h = (ymax - ymin) / height
+        data.append([file_name, width, height, name, xmin, xmax, ymin, ymax, center_x, center_y, w, h])
+    return data
 
+def parse_xml_files(xml_files):
+    with ThreadPoolExecutor() as executor:
+        results = list(executor.map(extract_object_info, xml_files))
+    return reduce(lambda x, y: x + y, results)
 
-parsed_list = list(map(extract_object_info, xml_list))
-data = reduce(lambda x, y: x + y, parsed_list)
+def convert_xml_to_yolo(xml_dir):
+    xml_files = iglob(os.path.join(xml_dir, '*.xml'))
+    data = parse_xml_files(xml_files)
+    columns = ['filename', 'width', 'height', 'name', 'xmin', 'xmax', 'ymin', 'ymax', 'center_x', 'center_y', 'w', 'h']
+    df = pd.DataFrame(data, columns=columns)
+    df[columns[1:]] = df[columns[1:]].astype(float)
+    return df
 
-# convert it all into a pandas dataframe
-df = pd.DataFrame(data, columns=['filename', 'width', 'height', 'name', 'xmin', 'xmax', 'ymin', 'ymax'])
-
-# print(df.info())
-
-# all the data is of type object, but we need width height xmin xmax ymin ymax as integer so conversion
-cols = ['width', 'height', 'xmin', 'xmax', 'ymin', 'ymax']
-df[cols] = df[cols].astype(float)
-
-# get yolo labels from this data
-df['center_x'] = ((df['xmax'] + df['xmin']) / 2) / df['width']
-df['center_y'] = ((df['ymax'] + df['ymin']) / 2) / df['height']
-df['w'] = (df['xmax'] - df['xmin']) / df['width']
-df['h'] = (df['ymax'] - df['ymin']) / df['height']
-
-# print(df.info())
+if __name__ == '__main__':
+    xml_dir = './dataset/'
+    df = convert_xml_to_yolo(xml_dir)
