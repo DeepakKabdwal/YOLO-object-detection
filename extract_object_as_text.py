@@ -36,4 +36,22 @@ def extract_object_info(filename):
 
 
 parsed_list = list(map(extract_object_info, xml_list))
+data = reduce(lambda x, y : x+y, parsed_list)
+
+# convert it all into a pandas dataframe
+df = pd.DataFrame(data, columns=['filename', 'width', 'height', 'name', 'xmin', 'xmax', 'ymin', 'ymax'])
+
+#print(df.info())
+
+# all the data is of type object but we need width height xmin xmax ymin ymax as integer so conversion
+cols = ['width', 'height', 'xmin', 'xmax', 'ymin', 'ymax']
+df[cols] = df[cols].astype(float)
+
+# get yolo labels from thsi data
+df['center_x'] = ((df['xmax'] + df['xmin'])/2)/df['width']
+df['center_y'] = ((df['ymax'] + df['ymin'])/2)/df['height']
+df['w'] = (df['xmax'] - df['xmin'])/df['width']
+df['h'] = (df['ymax'] - df['ymin'])/df['height']
+
+print(df.info())
 
