@@ -5,6 +5,7 @@ import pandas as pd
 from xml.etree import ElementTree as et
 from concurrent.futures import ThreadPoolExecutor
 
+
 def extract_object_info(xml_file):
     tree = et.parse(xml_file)
     root = tree.getroot()
@@ -27,19 +28,25 @@ def extract_object_info(xml_file):
         data.append([file_name, width, height, name, xmin, xmax, ymin, ymax, center_x, center_y, w, h])
     return data
 
+
 def parse_xml_files(xml_files):
     with ThreadPoolExecutor() as executor:
         results = list(executor.map(extract_object_info, xml_files))
     return reduce(lambda x, y: x + y, results)
+
 
 def convert_xml_to_yolo(xml_dir):
     xml_files = iglob(os.path.join(xml_dir, '*.xml'))
     data = parse_xml_files(xml_files)
     columns = ['filename', 'width', 'height', 'name', 'xmin', 'xmax', 'ymin', 'ymax', 'center_x', 'center_y', 'w', 'h']
     df = pd.DataFrame(data, columns=columns)
-    df[columns[1:]] = df[columns[1:]].astype(float)
+    cols_to_convert = ['width', 'height', 'xmin', 'xmax', 'ymin', 'ymax']
+    df[cols_to_convert] = df[cols_to_convert].astype(float)
     return df
+
 
 if __name__ == '__main__':
     xml_dir = './dataset/'
     df = convert_xml_to_yolo(xml_dir)
+
+
