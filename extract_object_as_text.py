@@ -6,7 +6,6 @@ from xml.etree import ElementTree as et
 from concurrent.futures import ThreadPoolExecutor
 from shutil import move
 
-
 def extract_object_info(xml_file):
     tree = et.parse(xml_file)
     root = tree.getroot()
@@ -28,14 +27,10 @@ def extract_object_info(xml_file):
         h = (ymax - ymin) / height
         data.append([file_name, width, height, name, xmin, xmax, ymin, ymax, center_x, center_y, w, h])
     return data
-
-
 def parse_xml_files(xml_files):
     with ThreadPoolExecutor() as executor:
         results = list(executor.map(extract_object_info, xml_files))
     return reduce(lambda x, y: x + y, results)
-
-
 def convert_xml_to_yolo(xml_dir):
     xml_files = iglob(os.path.join(xml_dir, '*.xml'))
     data = parse_xml_files(xml_files)
@@ -44,14 +39,12 @@ def convert_xml_to_yolo(xml_dir):
     cols_to_convert = ['width', 'height', 'xmin', 'xmax', 'ymin', 'ymax']
     df[cols_to_convert] = df[cols_to_convert].astype(float)
     return df
-
 def label_encoding(df):
     labels = {'person':0, 'aeroplane':1, 'tvmonitor':2, 'train':3, 'boat':4, 'dog':5, 'chair':6, 'bird':7, 'bicycle':8,
               'bottle':9, 'sheep':10, 'diningtable':11, 'horse':12, 'motorbike':13, 'sofa':14, 'cow':15, 'car':16, 'cat':17,
               'bus':18, 'pottedplant':19}
     df.loc[:, 'id'] = df.loc[:, 'name'].apply(lambda x: labels[x])
     return df
-
 
 if __name__ == '__main__':
     xml_dir = './dataset/'
@@ -114,9 +107,3 @@ filename_series = pd.Series(list(training_group_by_obj.groups.keys()))
 filename_series_test = pd.Series(list(testing_group_by_obj.groups.keys()))
 filename_series.apply(save_data, args=(train_folder, training_group_by_obj))
 filename_series_test.apply(save_data, args=(test_folder, testing_group_by_obj))
-
-
-
-
-
-
