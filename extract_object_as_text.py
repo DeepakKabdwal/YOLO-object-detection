@@ -55,7 +55,7 @@ df['center_x'] = ((df['xmax'] + df['xmin']) / 2) / df['width']
 df['center_y'] = ((df['ymax'] + df['ymin']) / 2) / df['height']
 df['w'] = (df['xmax'] - df['xmin']) / df['width']
 df['h'] = (df['ymax'] - df['ymin']) / df['height']
-=======
+
 if __name__ == '__main__':
     xml_dir = './dataset/'
     df = convert_xml_to_yolo(xml_dir)
@@ -80,7 +80,16 @@ test_df = df.query(f'filename in {images_test}')
 #print(train_df.head())
 
 #encode the label names as we can't train on text values
+def label_encoding(df):
+    labels = {'person':0, 'aeroplane':1, 'tvmonitor':2, 'train':3, 'boat':4, 'dog':5, 'chair':6, 'bird':7, 'bicycle':8,
+              'bottle':9, 'sheep':10, 'diningtable':11, 'horse':12, 'motorbike':13, 'sofa':14, 'cow':15, 'car':16, 'cat':17,
+              'bus':18, 'pottedplant':19}
+    df.loc[:, 'label'] = df.loc[:, 'name'].apply(lambda x: labels[x])
+    return df
 
 
+train_df = label_encoding(train_df)
+test_df = label_encoding(test_df)
 
+print(test_df.head())
 
