@@ -154,3 +154,4 @@ cython_debug/
 # folder containing data
 dataset/
 YOLOv8/
+runs/
