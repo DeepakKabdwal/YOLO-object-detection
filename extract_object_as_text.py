@@ -46,6 +46,7 @@ def convert_xml_to_yolo(xml_dir):
     return df
 
 def label_encoding(df):
+    labels = {'person':0, 'aeroplane':1, 'tvmonitor':2, 'train':3, 'boat':4, 'dog':5, 'chair':6, 'bird':7, 'bicycle':8,
               'bottle':9, 'sheep':10, 'diningtable':11, 'horse':12, 'motorbike':13, 'sofa':14, 'cow':15, 'car':16, 'cat':17,
               'bus':18, 'pottedplant':19}
     df.loc[:, 'id'] = df.loc[:, 'name'].apply(lambda x: labels[x])
