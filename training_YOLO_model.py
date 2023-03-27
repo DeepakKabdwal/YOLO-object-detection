@@ -11,5 +11,5 @@ if __name__ == '__main__':
 
 
 model = YOLO('yolov8n.yaml')
-model.train(data='data.yaml', epochs=3)
+model.train(data='data.yaml', epochs=1)
 
