@@ -14,7 +14,7 @@ The YOLOv8 model is trained using the Darknet framework, which is an open-source
 
 After the model has been trained, it is evaluated on the testing dataset to determine its accuracy and performance. The evaluation process involves measuring metrics such as precision, recall, and F1 score.
 
-##Step 03
+## Step 03
 Once the model has been trained and evaluated, it can be deployed for object detection tasks. The model can be used to detect objects in real-time video streams or images. The deployment process involves integrating the trained model into a production environment.
 
 In summary, the YOLOv8 project for object detection involves collecting, labelling, training, evaluating, and deploying a YOLOv8 model for object detection. The project follows a complete life cycle, from data collection to model deployment, and requires a range of skills, including data collection, labelling, machine learning, and software development.
