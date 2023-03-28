@@ -10,10 +10,13 @@ Once the images have been collected, they need to be labelled using a tool such 
 > While labeling it is importain to set the output setting to PascalVOC since I am using that database to supplement my dataset.
 
 ## Step 03
-Next, the labelled images are split into training and testing datasets. The training dataset is used to train the YOLOv8 model, while the testing dataset is used to evaluate the performance of the model.
+Next, the labels are needed to be converted to someting that can be used by YOLOv8 or any iteration of YOLO.
+This process involves parsing the XML files into a pandas dataframe and then extracting the information that is needed by YOLO for training.
+this incudes Center-x and Center-y corrdinates for object bounding box and maximum and minimum values for x and y for the object bounding box and the name of the object.
 
-The YOLOv8 model is trained using the Darknet framework, which is an open-source neural network framework. The framework is used to build and train the YOLOv8 model on the labelled images. The model is trained on the GPU for faster training.
-
+## Step 04
+Now we do the actual training which is the easiest part thanks to ultralytics providing their own package for this. Open the console and type **pip install ultralytics** this will download and install all the libraries required for using YOLOv8. The YOLOv8 model is trained using the Darknet framework, which is an open-source neural network framework. The framework is used to build and train the YOLOv8 model on the labelled images. The model is trained on the GPU for faster training.
+> Training a YOLO model requires at least 16GB or ram and a few hours depending on the image size and dataset size so make sure these requirements are met at-least.
 After the model has been trained, it is evaluated on the testing dataset to determine its accuracy and performance. The evaluation process involves measuring metrics such as precision, recall, and F1 score.
 
 ## Step 04
