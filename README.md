@@ -1,6 +1,6 @@
-# Spotlight AI: Unleashing the Power of Object Recognition with YOLO Algorithm
+## Spotlight AI: Unleashing the Power of Object Recognition with YOLO Algorithm
  
-The YOLOv8 project for object detection involves using the latest version of the YOLO (You Only Look Once) object detection algorithm to train a model on a dataset of images downloaded from various sources such as Google, Imgur, Flickr, etc. The project will follow a complete life cycle from data collection to model deployment.
+The YOLOv8 project for object detection involves using the latest version of the YOLO (You Only Look Once) object detection algorithm to train a model on a dataset of images downloaded from various sources such as Google, Imgur, Flickr, etc. The project will cover a complete life cycle from data gathering through model implementation.
 
 The first step in the project is to collect a large number of images that represent the types of objects that the model will be detecting. The images can be downloaded from various online sources, or collected from existing databases. The images need to be of high quality and should cover a wide range of object types and variations.
 
