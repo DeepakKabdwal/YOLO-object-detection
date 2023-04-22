@@ -1,4 +1,4 @@
-path: C:\Users\ACER\PycharmProjects\Yolo-object-detection\dataset
+path: C:\Users\ACER\PycharmProjects\Yolo-object-detection\data.yaml
 train: C:\Users\ACER\PycharmProjects\Yolo-object-detection\dataset\train
 val: C:\Users\ACER\PycharmProjects\Yolo-object-detection\dataset\test
 
